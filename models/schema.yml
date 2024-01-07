@@ -1,0 +1,53 @@
+version: 2 
+
+models: 
+  - name: dim_listings_cleansed 
+    description: This is dim listings table of airbnb dataset
+    columns: 
+
+    - name: listing_id 
+      tests: 
+        - unique 
+        - not_null 
+
+    - name: host_id 
+      tests: 
+        - not_null
+        - relationships: 
+            to: ref('dim_hosts_cleansed')
+            field: host_id 
+      
+    - name: room_type 
+      tests: 
+        - accepted_values:
+            values: [
+              'Entire home/apt',
+              'Private room',
+              'Shared room',
+              'Hotel room'
+            ]
+
+    - name: minimum_nights
+      tests: 
+        - positive_value
+
+  - name: dim_hosts_cleansed
+    description: Cleansed table for the Airbnb hosts
+    columns:
+      - name: host_id
+        description: The id of the host. This is the primary key.
+        tests:
+          - not_null
+          - unique
+      
+      - name: host_name
+        description: The name of the host
+        tests:
+          - not_null
+      
+      - name: is_superhost
+        description: Defines whether the hosts is a superhost.
+        tests:
+          - accepted_values:
+              values: ['t', 'f']
+  
